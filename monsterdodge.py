@@ -39,13 +39,13 @@ def main():
                 stop_game = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    heroX += 10
+                    heroX += 1
                 if event.key == pygame.K_LEFT:
-                    heroX -= 10
+                    heroX -= 1
                 if event.key == pygame.K_UP:
-                    heroY -= 10
+                    heroY -= 1
                 if event.key == pygame.K_DOWN:
-                    heroY += 10
+                    heroY += 1
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     heroY = heroY
@@ -53,8 +53,9 @@ def main():
                     heroX = heroX
         screen.blit(background, (0,0))
         screen.blit(heroImg, (heroX, heroY))
-        monsterY += randint(-10,10)
-        monsterX += randint(-10,10)
+        #
+        # monsterY += randint(-1,1)
+        # monsterX += randint(-1,1)
         if monsterX >= 512:
             monsterX -= 512
         if monsterY >= 480:
@@ -72,8 +73,12 @@ def main():
             heroY =428
         elif heroY < 12:
             heroY = 12
-        heroHitX = (heroX, heroX+32)
-        heroHitY = (heroY, heroY+32)
+        heroHitX = range(heroX, heroX+32)
+        heroHitY = range(heroY, heroY+32)
+        if monsterX >= heroX and monsterX <= heroX-32 and monsterY >= heroY and monsterY <= heroY +32 and monsterY >= heroY:
+            print('HIT')
+
+
         # Game logic
 
         # Game display
