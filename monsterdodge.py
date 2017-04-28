@@ -25,13 +25,14 @@ class Hero(Character):
             self.y =428
         elif self.y < 12:
             self.y = 12
-    def hitDetect(self, targetX, targetY):
-        if self.x + 32 > targetX and targetX + 32 > self.x and self.y + 32 > targetY and targetY + 32 > self.y:
-            return True
+    def hitDetect(self, targetX, targetY, fire):
+        if fire:
+            if self.x + 32 > targetX and targetX + 32 > self.x and self.y + 32 > targetY and targetY + 32 > self.y:
+                return True
 
 class Monster(Character):
     def limit(self):
-        if self.x >= 512:
+        if self.x > 512:
             self.x -= 512
         if self.y >= 480:
             self.y -= 480
@@ -44,13 +45,13 @@ class Monster(Character):
         self.dire = mov
     def selfMove(self):
         if self.dire == 1: #right
-            self.speedX = 5
+            self.speedX = 2
         if self.dire == 2: #left
-            self.speedX = -5
+            self.speedX = -2
         if self.dire == 3: #up
-            self.speedY = -5
+            self.speedY = -2
         if self.dire == 4: # down
-            self.speedY = 5
+            self.speedY = 2
         if self.speedX == 0 or self.speedY == 0:
             pass
         else:
@@ -84,6 +85,7 @@ def main():
     backgroundAlt = pygame.image.load('spaceinverse.png')
     heroImg = pygame.image.load('crosshair2.png')
     monsterImg = pygame.image.load('images/monster.png')
+    explosion = pygame.image.load('explosion.png')
 
     screen.blit(background, (0,0))
     screen.blit(heroImg, (hero.x, hero.y))
@@ -93,6 +95,7 @@ def main():
 
     hit = 0 #hit detection
     loopIteration = 0 #loop count
+    monsterCondition = 0
 
     while not stop_game:
             # Event handling
@@ -111,8 +114,17 @@ def main():
                 if event.key == pygame.K_SPACE:
                     print('SPACE')
                     screen.blit(backgroundAlt, (0,0))
+                    bgShoot = backgroundAlt.copy()
+                    pygame.draw.line(bgShoot,(255,0,0),(0,480),(hero.x+16,hero.y+16), 5)
+                    pygame.draw.line(bgShoot,(255,0,0),(512,480),(hero.x+16,hero.y+16), 5)
+                    screen.blit(bgShoot, (0,0))
                     pygame.display.update()
                     pygame.time.delay(5)
+                    if hero.hitDetect(monster.x, monster.y, True):
+                        print('Monster hit!')
+                        monsterCondition = 'dead'
+                #    monster.damage()
+
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
                     hero.speedY = 0
@@ -123,19 +135,26 @@ def main():
                 elif event.key == pygame.K_RIGHT:
                     hero.speedX = 0
         screen.blit(background, (0,0))
-        if hero.hitDetect(monster.x, monster.y):
-        #if monster.x + 32 > hero.x and hero.x + 32 > monster.x and monster.y + 32 > hero.y and hero.y + 32 > monster.y:
-            hit +=1
-            print(hit)
+
+        # if hero.hitDetect(monster.x, monster.y):
+        #     hit +=1
+        #     print(hit)
         #
         # Game logic
-        monster.selfMove()
         monster.limit()
-        monster.update()
+
         hero.limit()
         hero.update()
         screen.blit(heroImg, (hero.x, hero.y))
-        screen.blit(monsterImg, (monster.x, monster.y))
+        if monsterCondition == 'dead':
+            screen.blit(explosion, (monster.x, monster.y))
+            pygame.display.update()
+
+        else:
+            screen.blit(monsterImg, (monster.x, monster.y))
+            monster.selfMove()
+            monster.update()
+
 
         if next_action_time <= int(time.time()):
             loopIteration += 1
@@ -146,8 +165,10 @@ def main():
             next_action_time = int(time_started) + 2
         # Game display
 
+
         pygame.display.update()
         clock.tick(60)
+
 
     pygame.quit()
 
