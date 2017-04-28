@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+import time
 
 def main():
     width = 512
@@ -12,6 +13,8 @@ def main():
     clock = pygame.time.Clock()
 
     # Game initialization
+    time_started = time.time()
+    next_action_time = time_started +2
     heroX = 256
     heroY = 0
     monsterX = 300
@@ -39,13 +42,13 @@ def main():
                 stop_game = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    heroX += 1
+                    heroX += 10
                 if event.key == pygame.K_LEFT:
-                    heroX -= 1
+                    heroX -= 10
                 if event.key == pygame.K_UP:
-                    heroY -= 1
+                    heroY -= 10
                 if event.key == pygame.K_DOWN:
-                    heroY += 1
+                    heroY += 10
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     heroY = heroY
@@ -54,8 +57,8 @@ def main():
         screen.blit(background, (0,0))
         screen.blit(heroImg, (heroX, heroY))
         #
-        # monsterY += randint(-1,1)
-        # monsterX += randint(-1,1)
+        monsterY += randint(1,100)
+        monsterX += randint(-100,100)
         if monsterX >= 512:
             monsterX -= 512
         if monsterY >= 480:
@@ -75,12 +78,16 @@ def main():
             heroY = 12
         heroHitX = range(heroX, heroX+32)
         heroHitY = range(heroY, heroY+32)
-        if monsterX >= heroX and monsterX <= heroX-32 and monsterY >= heroY and monsterY <= heroY +32 and monsterY >= heroY:
-            print('HIT')
+        # if monsterX >= heroX and monsterX <= heroX-32 and monsterY >= heroY and monsterY <= heroY +32 and monsterY >= heroY:
+        #     print('HIT')
 
 
         # Game logic
 
+        if next_action_time <= int(time.time()):
+        #    monster.mov()
+            time_started = time.time()
+            next_action_time = int(time_started) + 2
         # Game display
 
         pygame.display.update()
