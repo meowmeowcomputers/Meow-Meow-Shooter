@@ -151,16 +151,17 @@ def main():
             monster[i].limit(width, height)
             if monster[i].condition == 'dead': #Checks to see if monster is dead
                 screen.blit(explosion, (monster[i].x, monster[i].y)) #Explosion pic
-                monster[i].condition == 'gone'
+                monster[i].condition = 'gone'
+                print('monster')
 
             elif monster[i].condition == 'alive':
                 screen.blit(monsterImg, (monster[i].x, monster[i].y)) #Display monster
                 monster[i].selfMove()
                 monster[i].update()
-            else:
-                screen.blit(background, (0,0))
-
+            elif monster[i].condition == 'gone':
+                pass
         # Game logic
+        pygame.display.update()
 
         hero.limit() #Hero limited to the bounds of the game
         hero.update() #Sets Hero speed to user input
